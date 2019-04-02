@@ -1,28 +1,42 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+//https://www.youtube.com/watch?v=yu3dnHrnps4
+import React, { useState, useEffect } from 'react';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+
+function useLocalStorageState(key, defaultValue) {
+  const [state, setState] = useState(() => {
+    let value;
+    try {
+      value = JSON.parse(window.localStorage.getItem(key) || JSON.stringify(defaultValue));
+      console.log(value);
+    } catch (e) {
+      //value = defaultValue;
+    }
+    return value;
+  })
+
+  useEffect (
+    () => {
+    window.localStorage.setItem(key, state)
+  }, [state]
+  )
+  return [state, setState];
 }
+
+function App() {
+  const [count, setCount] = useLocalStorageState('my-app:count', 0);
+
+  return (
+    <>
+      <button onClick={() => setCount(0)}>
+        clear
+      </button>
+      <button onClick={() => setCount(count + 1)}>
+        {count}
+      </button>
+    </>
+  )
+}
+
+
 
 export default App;
